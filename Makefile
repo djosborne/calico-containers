@@ -255,3 +255,18 @@ setup-env:
 	virtualenv venv
 	venv/bin/pip install --upgrade -r build_calicoctl/requirements.txt
 	@echo "run\n. venv/bin/activate"
+
+rpm-builder.created:
+	docker build -t calico-rpm-builder -f calico_node/rpm/Dockerfile calico_node
+
+rpm: rpm-builder.created
+	mkdir -p dist
+	chmod 777 dist
+
+	docker run -v `pwd`/dist/:/root/rpmbuild/RPMS/x86_64 \
+	calico-rpm-builder \
+	rpmbuild -ba /root/calico-dockerless.spec
+
+builder-clean:
+	docker rmi calico-mesos-builder
+	rm -rf packages/rpms
