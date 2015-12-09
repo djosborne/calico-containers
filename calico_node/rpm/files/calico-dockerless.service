@@ -9,7 +9,7 @@ Before=calico-dockerless-bird.service
 
 [Service]
 User=root
-ExecStart=/usr/bin/calicoctl node --detach=false --runtime=none
+ExecStart=/usr/local/bin/calicoctl node --detach=false --runtime=none
 EnvironmentFile=/etc/calico/calico-environment
 
 [Install]

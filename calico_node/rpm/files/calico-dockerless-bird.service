@@ -4,7 +4,7 @@ After=calico-dockerless-confd.service
 Requires=calico-dockerless-confd.service
 
 [Service]
-ExecStart=/usr/bin/bird -R -s /etc/calico/bird.ctl -d -c /etc/calico/confd/config/bird.cfg
+ExecStart=/usr/local/bin/bird -R -s /run/bird.ctl -d -c /etc/calico/confd/config/bird.cfg
 EnvironmentFile=/etc/calico/calico-environment
 
 [Install]
