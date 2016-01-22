@@ -45,10 +45,13 @@ The [Calico-Mesos RPM Installation Guide](RpmInstallCalicoMesos.md) serves as th
 ### b.) Manual
 For an in-depth walkthrough of the full installation procedure performed by the RPMs, see the [Calico-Mesos Manual Install Guide](ManualInstallCalicoMesos.md).
 
-### c.) Dockerized Deployment
+### c.) Dockerized Deployment (Automated)
 For those of you that don't want to install mesos onto your hosts, 
 we've dockerized the services and already included Calico in them. 
-See the [Dockerized Mesos Guide](DockerizedDeployment.md) for info on how to get up and running, fast.
+Check out the [Vagrant Dockerized Mesos Guide] for info on how to get up and running, fast.
+
+### d.) Dockerized Deployment (Manual)
+To run the dockerized mesos cluster by hand, check out the [Dockerized Mesos Guide](DockerizedDeployment.md).
 
 ## 3. Launching Tasks
 Calico is compatible with all frameworks which use the new NetworkInfo protobuf when launching tasks. Marathon has introduced limited support for this. For an early peek at using this , use `mesosphere/marathon:v0.14.0-RC2`.

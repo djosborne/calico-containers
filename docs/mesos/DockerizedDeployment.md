@@ -6,9 +6,9 @@
 > You are viewing the calico-containers documentation for release **release**.
 <!--- end of master only -->
 
-# Deploying a Dockerized Mesos Cluster with Calico.
+# Manually Deploying a Dockerized Mesos Cluster with Calico.
 
-In these instructions, we will run all cluster services as [Docker][docker] containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.  The services we will need are
+In these instructions, we will run a Mesos Cluster where all cluster services run as [Docker][docker] containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.  The services we will need are:
 
  * Zookeeper
  * etcd
@@ -17,7 +17,9 @@ In these instructions, we will run all cluster services as [Docker][docker] cont
  * Calico
  * Marathon (Mesos framework)
 
-In these brief instructions, I'll concentrate on getting Mesos and Calico up and running as quickly as possible.  This means leaving out the details of how to configure highly-available services.  Instead, I'll install Zookeeper, etcd, and the Mesos Master on the same "master" node.
+We'll concentrate on getting Mesos and Calico up and running as quickly as possible.  This means leaving out the details of how to configure highly-available services.  Instead, we'll install Zookeeper, etcd, and the Mesos Master on the same "master" node.
+
+For an automated install of a two-host Dockerized Mesos cluster using Vagrant and VirtualBox, follow the [Vagrant Dockerized Mesos Guide](DockerizedVagrant.md).
 
 
 # Preparation
