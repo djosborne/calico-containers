@@ -8,7 +8,7 @@
 
 # Manually Deploying a Dockerized Mesos Cluster with Calico.
 
-In these instructions, we will run a Mesos Cluster where all cluster services run as [Docker][docker] containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.  The services we will need are:
+In these instructions, we will run a Mesos Cluster where all cluster services run as Docker containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.  The services we will need are:
 
  * Zookeeper
  * etcd
@@ -218,5 +218,4 @@ At time of writing Marathon still uses the old Mesos networking, rather than Cal
 [calico]: http://projectcalico.org
 [mesos]: https://mesos.apache.org/
 [net-modules]: https://github.com/mesosphere/net-modules
-[docker]: https://www.docker.com/
 [![Analytics](https://ga-beacon.appspot.com/UA-52125893-3/calico-containers/docs/mesos/DockerizedDeployment.md?pixel)](https://github.com/igrigorik/ga-beacon)

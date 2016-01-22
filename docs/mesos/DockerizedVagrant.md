@@ -8,7 +8,7 @@
 
 # Deploying a Vagrant Dockerized Mesos Cluster with Calico
 
-In these instructions, we will create two Centos virtual machines (a master and an agent) that run all cluster services as [Docker][docker] containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.
+In these instructions, we will create two Centos virtual machines (a master and an agent) that run all cluster services as Docker containers.  This speeds deployment and will prevent pesky issues like incompatible dependencies.
 
 If you would prefer to run the commands manually to better understand what is being run in the script,
 check out the [Manual Dockerized Deployment guide](DockerizedDeployment.md).
@@ -25,7 +25,7 @@ On the Agent machine, we will install containers for:
  * Mesos Agent
  * Calico
 
-## Preparing Host Machine
+## Requirements
 
 To run these instructions, you will need a host machine with:
 
@@ -38,26 +38,22 @@ To run these instructions, you will need a host machine with:
 
 ## Deploy Mesos Cluster with Vagrant
 
-The vagrant script will create the two Centos virtual machines, install docker and calico on the machines, pull the required docker images from DockerHub, and start the images.
-
 To get the vagrant script, you must clone the [`calico-mesos repository`][calico-mesos] onto your host.
 
 ```
 # HTTPS
 git clone https://github.com/projectcalico/calico-mesos.git
-
-# SSH
-git clone git@github.com:projectcalico/calico-mesos.git 
 ```
 
-Change directories into the `calico-mesos` repository on your machine, then run `vagrant up` to execute the `Vagrantfile` in this directory:
+Change into the cloned `calico-mesos` directory, then run `vagrant up` to execute the `Vagrantfile` in this directory:
 
 ```
 cd calico-mesos
 vagrant up
 ```
 
-That's it!  Note that the script may take up to 30 minutes to complete, so don't be alarmed if it 
+That's it!  Note that the script may take up to 30 minutes to complete as it creates the two
+virtual machines and pulls the docker container images, so don't be alarmed if it 
 seems to be taking its time.
 
 ## Vagrant Install Results
@@ -95,10 +91,13 @@ vagrant ssh <HOSTNAME>
 
 At this point, you're Mesos Cluster is configured and you can start using frameworks.
 
-You can run the following command on either instance to use a Calico framework that runs tests on the cluster:
+To ensure that your cluster is properly networking containers with Calico and enforcing policy as expected, run the Calico Mesos Test Framework, which launches various tasks across your Mesos cluster:
 ```
 docker run calico/calico-mesos-framework 172.18.8.101:5050
 ```
+> NOTE: Some tests require multiple hosts to ensure cross-host communication, and may fail unless you are running 2+ agents.
+
+Additionally, you can launch your own tasks using Marathon. See our [Marathon Task Launch Instructions](README.md#3-launching-tasks) for more information.
 
 ### More Agents
 
@@ -119,12 +118,7 @@ where `X` is the instance number.
  
 Each agent instance will require additional storage and memory resources.
 
-
-[calico]: http://projectcalico.org
-[mesos]: https://mesos.apache.org/
 [calico-mesos]: https://github.com/projectcalico/calico-mesos
-[net-modules]: https://github.com/mesosphere/net-modules
-[docker]: https://www.docker.com/
 [virtualbox]: https://www.virtualbox.org/
 [vagrant]: https://www.vagrantup.com/
-[![Analytics](https://ga-beacon.appspot.com/UA-52125893-3/calico-containers/docs/mesos/DockerizedDeployment.md?pixel)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-52125893-3/calico-containers/docs/mesos/DockerizedVagrant.md?pixel)](https://github.com/igrigorik/ga-beacon)
