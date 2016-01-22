@@ -122,6 +122,10 @@ We'll use systemd to keep Zookeeper running.  Copy the unit into `/usr/lib/syste
 
 ## Mesos Master
 
+Before running the Master node, be sure to set the IP address of the Master to connect to the Mesos cluster.  Run the following command, replacing `<MASTER_IP>` with the Master's IP address.
+
+    sudo sh -c 'echo IP=<MASTER_IP> > /etc/sysconfig/mesos-master'
+
 Create and enable the `mesos-master` unit, which starts a Docker container running Mesos.
 
     sudo cp mesos-master.service /usr/lib/systemd/system/
@@ -170,9 +174,9 @@ Next, download the unit files
 
 You can learn more about `calicoctl` by running `calicoctl --help`.
 
-You'll need to configure Calico with the correct location of the etcd service.  In the following line, replace `masterip` with the IP address of the Master node.
+You'll need to configure Calico with the correct location of the etcd service.  In the following line, replace `<MASTER_IP>` with the IP address of the Master node.
 
-    sudo sh -c 'echo ETCD_AUTHORITY=masterip:4001 > /etc/sysconfig/calico'
+    sudo sh -c 'echo ETCD_AUTHORITY=<MASTER_IP>:4001 > /etc/sysconfig/calico'
 
 Then, enable the Calico service via `systemd`
 
@@ -186,9 +190,13 @@ Verify Calico is running
 
 ## Mesos Agent
 
-The Mesos Agent uses Zookeeper to keep track of the current Mesos Master.  Use the following command to tell the Mesos Agent where to find Zookeeper.  We installed it on the same host as the Mesos Master earlier, so substitute the name or IP of that host for `zookeeperip`.
+Use the following commands to tell the Mesos Agent where to find Zookeeper.  The Mesos Agent uses Zookeeper to keep track of the current Mesos Master.  We installed it on the same host as the Mesos Master earlier, so substitute the name or IP of that host for `<ZOOKEEPER_IP>`:
 
-    sudo sh -c 'echo ZK=zookeeperip > /etc/sysconfig/mesos-agent'
+    sudo sh -c 'echo ZK=<ZOKEEPER_IP> > /etc/sysconfig/mesos-agent'
+
+You also need to specify the IP address of the Agent to connect to the Mesos cluster.  Run the following command, replacing `<AGENT_IP>` with the Agent's IP address.
+
+    sudo sh -c 'echo IP=<AGENT_IP> > /etc/sysconfig/mesos-agent'
 
 Then, enable the Mesos Agent service
 
