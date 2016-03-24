@@ -1,5 +1,5 @@
 <!--- master only -->
-> ![warning](images/warning.png) This document applies to the HEAD of the calico-mesos-deployments source tree.
+> ![warning](../images/warning.png) This document applies to the HEAD of the calico-mesos-deployments source tree.
 >
 > View the calico-mesos-deployments documentation for the latest release [here](https://github.com/projectcalico/calico-mesos-deployments/blob/0.26.0%2B1/README.md).
 <!--- else
