@@ -1,0 +1,67 @@
+{
+  "id": "/calico-stars",
+  "apps": [
+    {
+      "id": "management-ui",
+      "uris": ["https://raw.githubusercontent.com/djosborne/calico-containers/mesos-docker-stars/docs/mesos/stars-demo/calico-stars-resources.json"],
+      "cmd": "/star/target/debug/star-collect --resources-file=$MESOS_SANDBOX/calico-stars-resources.json",
+      "cpus": 0.2,
+      "mem": 64.0,
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "djosborne/star:v0.5.0",
+          "parameters": [
+            { "key": "net", "value": "management-ui" },
+            { "key": "ip", "value": "192.168.255.254" }
+          ]
+        }
+      }      
+    },
+    {
+      "id": "client",
+      "cmd": "/star/target/debug/star-probe --urls=http://frontend.calico-stars.marathon.mesos:9000/status,http://backend.calico-stars.marathon.mesos:9000/status",
+      "cpus": 0.1,
+      "mem": 64.0,
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "djosborne/star:v0.5.0",
+          "parameters": [
+            { "key": "net", "value": "client" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "frontend",
+      "cmd": "/star/target/debug/star-probe --urls=http://client.calico-stars.marathon.mesos:9000/status,http://backend.calico-stars.marathon.mesos:9000/status",
+      "cpus": 0.1,
+      "mem": 64.0,
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "djosborne/star:v0.5.0",
+          "parameters": [
+            { "key": "net", "value": "frontend" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "backend",
+      "cmd": "/star/target/debug/star-probe --urls=http://client.calico-stars.marathon.mesos:9000/status,http://frontend.calico-stars.marathon.mesos:9000/status",
+      "cpus": 0.1,
+      "mem": 64.0,
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "djosborne/star:v0.5.0",
+          "parameters": [
+            { "key": "net", "value": "backend" }
+          ]
+        }
+      }
+    }
+  ]
+}
