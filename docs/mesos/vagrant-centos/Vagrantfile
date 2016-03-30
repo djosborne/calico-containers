@@ -155,38 +155,39 @@ Vagrant.configure("2") do |config|
       host.vm.provision :shell, inline: "sh -c 'echo PEERDNS=yes >> /etc/sysconfig/network-scripts/ifcfg-eth1'"
       host.vm.provision :shell, inline: "systemctl restart network"
 
-	  # Agents
+      # Provision with docker, and download the calico-node docker image
+      host.vm.provision :docker, images: [
+	        "calico/node-libnetwork:#{calico_libnetwork_ver}",
+	        "calico/node:#{calico_node_ver}",
+      ]
+
+      # Configure docker to use etcd on master as its datastore
+      host.vm.provision :shell, inline: "mkdir -p /usr/lib/systemd/system/docker.service.d"
+      host.vm.provision "file", source: "units/docker.service.d/docker.conf", destination: "/tmp/docker.conf"
+      host.vm.provision :shell, inline: "mv /tmp/docker.conf /usr/lib/systemd/system/docker.service.d/docker.conf"
+      host.vm.provision :shell, inline: "systemctl daemon-reload"
+      host.vm.provision :shell, inline: "systemctl restart docker.service"
+
+      # Install calicoctl
+      host.vm.provision :shell, inline: "curl -o /usr/bin/calicoctl -L #{calicoctl_url}", :privileged => true
+      host.vm.provision :shell, inline: "chmod +x /usr/bin/calicoctl"
+
+      # Install the Calico service files and start the Calico services.
+      ["calico", "calico-libnetwork"].each do |service_name|
+        host.vm.provision "file", source: "units/#{service_name}.service", destination: "/tmp/#{service_name}.service"
+        host.vm.provision :shell, inline: "mv /tmp/#{service_name}.service /usr/lib/systemd/system/#{service_name}.service"
+        host.vm.provision :shell, inline: "systemctl start #{service_name}"
+      end
+
       if i > 1
-        # Provision with docker, and download the calico-node docker image
-        host.vm.provision :docker, images: [
-          "calico/node-libnetwork:#{calico_libnetwork_ver}",
-          "calico/node:#{calico_node_ver}"
-        ]
-
-        # Configure docker to use etcd on master as its datastore
-        host.vm.provision :shell, inline: "mkdir -p /usr/lib/systemd/system/docker.service.d"
-        host.vm.provision "file", source: "units/docker.service.d/docker.conf", destination: "/tmp/docker.conf"
-        host.vm.provision :shell, inline: "mv /tmp/docker.conf /usr/lib/systemd/system/docker.service.d/docker.conf"
-        host.vm.provision :shell, inline: "systemctl daemon-reload"
-        host.vm.provision :shell, inline: "systemctl restart docker.service"
-
-        # Install calicoctl
-        host.vm.provision :shell, inline: "curl -o /usr/bin/calicoctl -L #{calicoctl_url}", :privileged => true
-        host.vm.provision :shell, inline: "chmod +x /usr/bin/calicoctl"
-
-        # Install the Calico service files and start the Calico services.
-        ["calico", "calico-libnetwork"].each do |service_name|
-          host.vm.provision "file", source: "units/#{service_name}.service", destination: "/tmp/#{service_name}.service"
-          host.vm.provision :shell, inline: "mv /tmp/#{service_name}.service /usr/lib/systemd/system/#{service_name}.service"
-          host.vm.provision :shell, inline: "systemctl start #{service_name}"
-        end
-
         # Configure and start mesos-slave
         host.vm.provision :shell, inline: "sh -c 'echo zk://#{master_ip}:2181/mesos > /etc/mesos/zk'"
         host.vm.provision :shell, inline: "sh -c 'echo #{ip} > /etc/mesos-slave/ip'"
         host.vm.provision :shell, inline: "sh -c 'echo #{ip} > /etc/mesos-slave/hostname'"
         host.vm.provision :shell, inline: "sh -c 'echo mesos,docker > /etc/mesos-slave/containerizers'"
         host.vm.provision :shell, inline: "systemctl start mesos-slave.service"
+      else
+        host.vm.provision :docker, images: ["djosborne/marathon-lb"]
       end
     end
   end
