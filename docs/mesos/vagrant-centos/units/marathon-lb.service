@@ -1,0 +1,17 @@
+[Unit]
+Description=marathon-lb
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill marathon-lb
+ExecStartPre=-/usr/bin/docker rm marathon-lb
+#EnvironmentFile=/etc/sysconfig/calico
+ExecStart=/usr/bin/docker run --name marathon-lb \
+	--privileged \
+	--net=host \
+	-e PORTS=9090 \
+	djosborne/marathon-lb sse --marathon http://172.24.197.101:8080 --group external
+
+[Install]
+WantedBy=multi-user.target
