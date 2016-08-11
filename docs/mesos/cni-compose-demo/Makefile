@@ -3,7 +3,7 @@
 CALICO_NODE_VERSION=v0.19.0
 
 default: images
-images: calico-node pull # redis
+images: calico-node # redis
 	  CALICO_NODE_VERSION=$(CALICO_NODE_VERSION) docker-compose -p mesoscni build
 
 # Place tar of docker redis image into images/

@@ -57,7 +57,7 @@ services:
     - 192.168.255.254
 
   marathon:
-    image: mesosphere/marathon:v1.2.0-RC4
+    image: djosborne/marathon:unified
     environment:
       - MARATHON_MASTER=zk://zookeeper:2181/mesos
       - MARATHON_ZK=zk://zookeeper:2181/marathon
