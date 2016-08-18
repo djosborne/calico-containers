@@ -1,6 +1,6 @@
 {
   "zk": "",
-  "masters": ["mesosmaster:5050"],
+  "masters": ["127.0.0.1:5050"],
   "refreshSeconds": 5,
   "ttl": 60,
   "domain": "mesos",

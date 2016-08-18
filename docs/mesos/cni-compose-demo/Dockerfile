@@ -4,7 +4,7 @@ MAINTAINER Dan Osborne <dan@projectcalico.org>
 # Install Mesos
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E56151BF
 ENV DISTRO=ubuntu
-ENV CODENAME=trusty-unstable
+ENV CODENAME=trusty
 
 RUN echo "deb http://repos.mesosphere.com/${DISTRO} ${CODENAME} main" | \
   tee /etc/apt/sources.list.d/mesosphere.list
@@ -30,7 +30,7 @@ RUN curl -sSL https://get.docker.com/ | sh
 # Define additional metadata for our image.
 VOLUME /var/lib/docker
 
-RUN apt-get -y install mesos libevent-dev
+RUN apt-get -y install mesos=1.0.0-2.0.89.ubuntu1404 libevent-dev
 
 ####################
 # Mesos-DNS
@@ -64,9 +64,14 @@ ADD ./init_scripts/etc/ /etc/
 ######################
 ENV CALICO_NODE_VERSION=v0.19.0
 COPY ./images/calico-node-$CALICO_NODE_VERSION.tar /images/calico-node-$CALICO_NODE_VERSION.tar
-# COPY ./images/redis.tar /images/redis.tar
 RUN curl -L -o /usr/local/bin/calicoctl https://github.com/projectcalico/calico-docker/releases/download/$CALICO_NODE_VERSION/calicoctl
 RUN chmod +x /usr/local/bin/calicoctl
 
-ADD ./cni/ /cni/
+ADD ./cni/conf/ /cni/conf/
 
+# ADD https://github.com/projectcalico/calico-cni/releases/download/v1.4.0/calico /cni/plugins/calico
+ADD https://423-39909298-gh.circle-artifacts.com/0//home/ubuntu/calico-cni/dist/calico /cni/plugins/calico
+
+# ADD https://github.com/projectcalico/calico-cni/releases/download/v1.4.0/calico-ipam /cni/plugins/calico-ipam
+ADD https://423-39909298-gh.circle-artifacts.com/0//home/ubuntu/calico-cni/dist/calico-ipam /cni/plugins/calico-ipam
+RUN chmod +x /cni/plugins/*

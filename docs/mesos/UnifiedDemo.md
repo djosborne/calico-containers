@@ -1,19 +1,21 @@
 # Demo: Label Based Policy for Mesos
-```
-export MARATHON_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' mesoscni_marathon_1)
-export ETCD_AUTHORITY=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' mesoscni_etcd_1):2379
-```
 
 Our application uses a redis database.
 Lets define a marathon application: `database.json`
 ```
 {
   "id": "database",
-  "cmd": "redis-server --bind 0.0.0.0",
-  "cpus": 0.1,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "redis"
+    }
+  },
+  "cpus": 0.2,
   "mem": 128,
   "instances": 1,
   "ipAddress": {
+    "networkName": "calico-net-1",
     "labels": {
       "application": "database",
       "group": "production"
@@ -27,7 +29,7 @@ Lets define a marathon application: `database.json`
 
 Lets launch it using Marathon
 ```
-curl -X POST -H 'Content-Type: application/json' http://$MARATHON_IP:8080/v2/apps -d @database.json
+curl -X POST -H 'Content-Type: application/json' http://localhost:8080/v2/apps -d @database.json
 ```
 
 Next, let's write our application: a Python flask app that uses redis as its database:
@@ -56,11 +58,15 @@ Let's wrap our app into a marathon application definition: `frontend.json`
 ```
 {
   "id": "frontend",
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "calico/hello-dcos:v0.1.0"
+    }
+  }
   "instances": 3,
-  "cmd": "python app.py",
   "cpus": 0.1,
   "mem": 128,
-  "uris": ["file:///root/app.py"],
   "ipAddress": {
     "labels": {
       "application": "frontend",
@@ -75,7 +81,7 @@ Let's wrap our app into a marathon application definition: `frontend.json`
 
 Then launch it using Marathon
 ```
-curl -X POST -H 'Content-Type: application/json' http://$MARATHON_IP:8080/v2/apps -d @frontend.json
+curl -X POST -H 'Content-Type: application/json' http://localhost:8080/v2/apps -d @frontend.json
 ```
 
 Let's check how Mesos DNS responds to queries for our frontend service
