@@ -109,7 +109,7 @@ Options:
                              destination IP or domain name.
                            > interface=<IFACE NAME REGEX LIST>
                              Use the first valid IP address found on interfaces
-                             named as per the first matching supplied interface 
+                             named as per the first matching supplied interface
 			     name regex. Regexes are separated by commas
 			     (e.g. eth.*,enp0s.*).
 			   > skip-interface=<IFACE NAME REGEX LIST>
@@ -451,10 +451,10 @@ Description:
 
 	// If we didn't successfully start then notify the user.
 	if outScanner.Err() != nil {
-		fmt.Println("Error executing command: error reading calico/node logs, check logs for details")
+		fmt.Println("Error executing command: error reading calico/node logs, check calico/node container logs for details")
 		os.Exit(1)
 	} else if !started {
-		fmt.Println("Error executing command: calico/node has terminated, check logs for details")
+		fmt.Println("Error executing command: calico/node has terminated, check calico/node container logs for details")
 		os.Exit(1)
 	}
 }
